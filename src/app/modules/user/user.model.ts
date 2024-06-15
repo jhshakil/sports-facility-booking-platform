@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { TUser } from './user.interface';
+import { TUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 
@@ -28,18 +28,25 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// userSchema.post('save', function (doc, next) {
-//   doc.password = '';
-//   next();
-// });
-
 // Modify toJSON method to remove the password
 userSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
 
   delete userObject.password;
+  delete userObject.__v;
   return userObject;
 };
 
-export const User = model<TUser>('User', userSchema);
+userSchema.statics.isUserExist = async function (email: string) {
+  return User.findOne({ email }).select('+password');
+};
+
+userSchema.statics.isPasswordMatched = async function (
+  password: string,
+  hashedPassword: string,
+) {
+  return await bcrypt.compare(password, hashedPassword);
+};
+
+export const User = model<TUser, UserModel>('User', userSchema);
