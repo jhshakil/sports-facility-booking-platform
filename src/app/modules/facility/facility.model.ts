@@ -9,4 +9,13 @@ const facilitySchema = new Schema<TFacility>({
   isDeleted: { type: Boolean, default: false },
 });
 
+// Modify toJSON method to remove the password
+facilitySchema.methods.toJSON = function () {
+  const facility = this;
+  const facilityObject = facility.toObject();
+
+  delete facilityObject.__v;
+  return facilityObject;
+};
+
 export const Facility = model<TFacility>('Facility', facilitySchema);
