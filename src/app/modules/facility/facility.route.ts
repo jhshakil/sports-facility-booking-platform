@@ -14,4 +14,19 @@ router.post(
   FacilityControllers.createFacility,
 );
 
+router.patch(
+  '/:id',
+  auth(USER_ROLE.admin),
+  validateRequest(FacilityValidations.updateFacilityValidation),
+  FacilityControllers.updateFacility,
+);
+
+router.delete(
+  '/:id',
+  auth(USER_ROLE.admin),
+  FacilityControllers.deleteFacility,
+);
+
+router.get('/', FacilityControllers.getAllFacility);
+
 export const FacilityRoutes = router;
