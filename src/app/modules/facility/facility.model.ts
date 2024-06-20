@@ -11,6 +11,7 @@ const facilitySchema = new Schema<TFacility>({
 
 // Modify toJSON method to remove the password
 facilitySchema.methods.toJSON = function () {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const facility = this;
   const facilityObject = facility.toObject();
 
