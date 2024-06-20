@@ -12,4 +12,9 @@ const bookingSchema = new Schema<TBooking>({
   isBooked: { type: String, enum: BookingStatus, default: 'confirmed' },
 });
 
+bookingSchema.pre('find', function (next) {
+  this.find({ isBooked: { $ne: 'canceled' } });
+  next();
+});
+
 export const Booking = model<TBooking>('Booking', bookingSchema);
