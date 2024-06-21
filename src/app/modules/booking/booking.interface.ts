@@ -9,3 +9,9 @@ export type TBooking = {
   payableAmount?: number;
   isBooked: 'confirmed' | 'unconfirmed' | 'canceled';
 };
+
+export type TSchedule = {
+  date: string;
+  startTime: string;
+  endTime: string;
+};

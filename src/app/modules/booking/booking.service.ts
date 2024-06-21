@@ -4,8 +4,11 @@ import { Facility } from '../facility/facility.model';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { User } from '../user/user.model';
+import { hasTimeConflict } from './booking.utils';
 
 const createBookingIntoDB = async (payload: TBooking, user: string) => {
+  const { date, startTime, endTime } = payload;
+
   const mainData = payload;
   const userData = await User.findOne({ email: user });
 
@@ -26,6 +29,23 @@ const createBookingIntoDB = async (payload: TBooking, user: string) => {
     facility.pricePerHour;
 
   mainData.payableAmount = payableAmount;
+
+  // get the schedules of the bookings
+  const assignedSchedules = await Booking.find({ date }).select(
+    'date startTime endTime',
+  );
+
+  const newSchedule = {
+    date,
+    startTime,
+    endTime,
+  };
+
+  if (hasTimeConflict(assignedSchedules, newSchedule))
+    throw new AppError(
+      httpStatus.CONFLICT,
+      'This booking slot is not available at that time ! Choose other time or day',
+    );
 
   const result = await Booking.create(mainData);
   return result;
