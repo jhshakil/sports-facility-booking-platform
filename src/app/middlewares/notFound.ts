@@ -5,7 +5,7 @@ import httpStatus from 'http-status';
 const notFound: RequestHandler = (req, res, next) => {
   return res.status(httpStatus.NOT_FOUND).json({
     success: false,
-    message: 'API Not Found !!',
+    message: 'Not Found',
     error: '',
   });
 };

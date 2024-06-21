@@ -1,3 +1,4 @@
+import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { BookingServices } from './booking.service';
@@ -17,19 +18,33 @@ const createBooking = catchAsync(async (req, res) => {
 const getAllBookings = catchAsync(async (req, res) => {
   const result = await BookingServices.getAllBookingsFromDB();
 
-  sendResponse(res, {
-    message: 'Bookings retrieved successfully',
-    data: result,
-  });
+  result && result.length
+    ? sendResponse(res, {
+        message: 'Bookings retrieved successfully',
+        data: result,
+      })
+    : sendResponse(res, {
+        success: false,
+        statusCode: httpStatus.NOT_FOUND,
+        message: 'No Data Found',
+        data: result,
+      });
 });
 
 const getSingleBooking = catchAsync(async (req, res) => {
   const result = await BookingServices.getSingleBookingFromDB(req.user.email);
 
-  sendResponse(res, {
-    message: 'Bookings retrieved successfully',
-    data: result,
-  });
+  result && result.length
+    ? sendResponse(res, {
+        message: 'Bookings retrieved successfully',
+        data: result,
+      })
+    : sendResponse(res, {
+        success: false,
+        statusCode: httpStatus.NOT_FOUND,
+        message: 'No Data Found',
+        data: result,
+      });
 });
 
 const cancelBooking = catchAsync(async (req, res) => {

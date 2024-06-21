@@ -1,3 +1,4 @@
+import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { FacilityServices } from './facility.service';
@@ -35,10 +36,17 @@ const deleteFacility = catchAsync(async (req, res) => {
 const getAllFacility = catchAsync(async (req, res) => {
   const result = await FacilityServices.getAllFacilityFromDB();
 
-  sendResponse(res, {
-    message: 'Facilities retrieved successfully',
-    data: result,
-  });
+  result && result.length
+    ? sendResponse(res, {
+        message: 'Facilities retrieved successfully',
+        data: result,
+      })
+    : sendResponse(res, {
+        success: false,
+        statusCode: httpStatus.NOT_FOUND,
+        message: 'No Data Found',
+        data: result,
+      });
 });
 
 export const FacilityControllers = {
