@@ -18,17 +18,24 @@ const updateFacility = catchAsync(async (req, res) => {
     req.body,
   );
 
-  sendResponse(res, {
-    message: 'Facility updated successfully',
-    data: result,
-  });
+  result
+    ? sendResponse(res, {
+        message: 'Facility updated successfully',
+        data: result,
+      })
+    : sendResponse(res, {
+        success: false,
+        statusCode: httpStatus.NOT_FOUND,
+        message: 'Facility updated failed',
+        data: result,
+      });
 });
 
 const deleteFacility = catchAsync(async (req, res) => {
   const result = await FacilityServices.deleteFacilityFromDB(req.params.id);
 
   sendResponse(res, {
-    message: 'Facility updated successfully',
+    message: 'Facility deleted successfully',
     data: result,
   });
 });
