@@ -3,7 +3,20 @@ import sendResponse from '../../utils/sendResponse';
 import { AvailabilityServices } from './availability.service';
 
 const checkAvailability = catchAsync(async (req, res) => {
-  const result = await AvailabilityServices.checkingAvailability();
+  let date = req.query.date;
+
+  if (!date) {
+    const dateObj = new Date();
+    const month = dateObj.getUTCMonth() + 1;
+    const day = dateObj.getUTCDate();
+    const year = dateObj.getUTCFullYear();
+
+    date = `${year}-${month}-${day}` as string;
+  }
+
+  const result = await AvailabilityServices.checkingAvailability(
+    date as string,
+  );
 
   sendResponse(res, {
     message: 'Availability checked successfully',
