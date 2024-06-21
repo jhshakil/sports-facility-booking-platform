@@ -1,5 +1,5 @@
 import { Booking } from '../booking/booking.model';
-import findAvailableSlots from './availability.utils';
+import { findAvailableSlots } from './availability.utils';
 
 const checkingAvailability = async (date: string) => {
   const bookings = await Booking.find({ date }).select('startTime endTime');

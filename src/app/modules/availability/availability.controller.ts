@@ -11,7 +11,8 @@ const checkAvailability = catchAsync(async (req, res) => {
     const day = dateObj.getUTCDate();
     const year = dateObj.getUTCFullYear();
 
-    date = `${year}-${month}-${day}` as string;
+    date =
+      `${year}-${month > 9 ? month : `0${month}`}-${day > 9 ? day : `0${day}`}` as string;
   }
 
   const result = await AvailabilityServices.checkingAvailability(

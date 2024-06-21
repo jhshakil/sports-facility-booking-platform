@@ -1,29 +1,29 @@
 import { TAvailableTime } from './availability.interface';
 
 // Function to convert time string to minutes since midnight
-function timeToMinutes(time: string): number {
+const timeToMinutes = (time: string): number => {
   const [hours, minutes] = time.split(':').map(Number);
   return hours * 60 + minutes;
-}
+};
 
 // Function to convert minutes since midnight to time string
-function minutesToTime(minutes: number): string {
+const minutesToTime = (minutes: number): string => {
   const hours = Math.floor(minutes / 60)
     .toString()
     .padStart(2, '0');
   const mins = (minutes % 60).toString().padStart(2, '0');
   return `${hours}:${mins}`;
-}
+};
 
 // Find available slots given a list of booked slots
-export default function findAvailableSlots(
+export const findAvailableSlots = (
   bookedSlots: TAvailableTime[],
-  dayStart: string = '00:00',
-  dayEnd: string = '23:59',
-): TAvailableTime[] {
+  bookingStart: string = '00:00',
+  bookingEnd: string = '23:59',
+): TAvailableTime[] => {
   const availableSlots: TAvailableTime[] = [];
-  const dayStartMinutes = timeToMinutes(dayStart);
-  const dayEndMinutes = timeToMinutes(dayEnd);
+  const bookingStartMinutes = timeToMinutes(bookingStart);
+  const bookingEndMinutes = timeToMinutes(bookingEnd);
 
   // Sort the booked slots by start time
   bookedSlots.sort(
@@ -31,9 +31,9 @@ export default function findAvailableSlots(
   );
 
   // Check for available slots before the first booked slot
-  if (timeToMinutes(bookedSlots[0].startTime) > dayStartMinutes) {
+  if (timeToMinutes(bookedSlots[0].startTime) > bookingStartMinutes) {
     availableSlots.push({
-      startTime: dayStart,
+      startTime: bookingStart,
       endTime: bookedSlots[0].startTime,
     });
   }
@@ -52,13 +52,14 @@ export default function findAvailableSlots(
 
   // Check for available slots after the last booked slot
   if (
-    timeToMinutes(bookedSlots[bookedSlots.length - 1].endTime) < dayEndMinutes
+    timeToMinutes(bookedSlots[bookedSlots.length - 1].endTime) <
+    bookingEndMinutes
   ) {
     availableSlots.push({
       startTime: bookedSlots[bookedSlots.length - 1].endTime,
-      endTime: minutesToTime(dayEndMinutes),
+      endTime: minutesToTime(bookingEndMinutes),
     });
   }
 
   return availableSlots;
-}
+};
